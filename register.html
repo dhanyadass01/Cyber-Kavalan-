@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account - Cyber Kavalan</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-neon-blue: #00f2ff;
+      --color-neon-purple: #bc13fe;
+      --color-cyber-black: #000000;
+      --bg-base: var(--color-cyber-black);
+      --bg-surface: #04060f;
+      --bg-input: #101426;
+      --border-subtle: rgba(0, 242, 255, 0.14);
+      --text-primary: #ffffff;
+      --text-secondary: #a6b4cf;
+      --gradient-primary: linear-gradient(135deg, var(--color-neon-blue), var(--color-neon-purple));
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+    body { min-height: 100vh; background: var(--bg-base); color: var(--text-primary); display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+    .card { width: 100%; max-width: 420px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 2rem; }
+    .icon { width: 56px; height: 56px; border-radius: 14px; margin: 0 auto 1rem; background: var(--gradient-primary); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
+    h1 { font-size: 1.65rem; text-align: center; margin-bottom: 0.4rem; }
+    p { text-align: center; color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem; }
+    .input-group { position: relative; margin-bottom: 0.9rem; }
+    .input-group i { position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); color: #6f7f9d; }
+    input { width: 100%; background: var(--bg-input); border: 1px solid var(--border-subtle); border-radius: 8px; color: white; padding: 0.9rem 0.9rem 0.9rem 2.4rem; }
+    input:focus { outline: none; border-color: var(--color-neon-blue); box-shadow: 0 0 0 1px var(--color-neon-blue); }
+    .msg { min-height: 1.2rem; margin-top: 0.4rem; margin-bottom: 0.6rem; font-size: 0.85rem; color: var(--text-secondary); }
+    button { width: 100%; border: none; border-radius: 8px; padding: 0.95rem; font-weight: 700; color: white; background: var(--gradient-primary); cursor: pointer; }
+    .foot { margin-top: 1rem; text-align: center; font-size: 0.82rem; color: var(--text-secondary); }
+    .foot a { color: var(--color-neon-blue); text-decoration: none; }
+    .api-tools { display:flex; justify-content:center; align-items:center; gap:0.75rem; margin-top:0.85rem; font-size:0.76rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color: var(--text-secondary); flex-wrap:wrap; }
+    .api-tools a { color: var(--color-neon-blue); text-decoration:none; }
+    @media (max-width: 560px) {
+      body { padding: 1rem; min-height: 100svh; }
+      .card { padding: 1.25rem; }
+      h1 { font-size: 1.45rem; }
+      p { margin-bottom: 1.1rem; }
+      input { padding: 0.82rem 0.82rem 0.82rem 2.2rem; }
+      button { padding: 0.88rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon"><i class="fas fa-user-plus"></i></div>
+    <h1>Create Account</h1>
+    <p>Register once, then sign in easily anytime.</p>
+
+    <form id="registerForm">
+      <div class="input-group">
+        <i class="fas fa-user"></i>
+        <input type="text" id="name" placeholder="Your full name" required>
+      </div>
+      <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input type="email" id="email" placeholder="you@example.com" required>
+      </div>
+      <div class="msg" id="msg"></div>
+      <button type="submit">Create Account <i class="fas fa-arrow-right"></i></button>
+    </form>
+
+    <div class="foot">Already have an account? <a href="login.html">Login</a></div>
+    <div class="foot">Admin portal: <a href="admin-login.html">Admin Login</a></div>
+    <div class="api-tools"><a href="#" id="apiSettingsLink">API Settings</a><span>•</span><a href="#" id="apiResetLink">Reset API</a></div>
+  </div>
+
+  <script>
+    function normalizeApiBaseUrl(value) {
+      return String(value || '').trim().replace(/\/+$/, '');
+    }
+
+    const API_BASE_URL = (() => {
+      const params = new URLSearchParams(window.location.search);
+      const fromQuery = normalizeApiBaseUrl(params.get('api'));
+      if (fromQuery) {
+        localStorage.setItem('cyber_api_base_url', fromQuery);
+        return fromQuery;
+      }
+
+      const fromWindow = normalizeApiBaseUrl(window.__API_BASE_URL__);
+      if (fromWindow) return fromWindow;
+
+      const fromStorage = normalizeApiBaseUrl(localStorage.getItem('cyber_api_base_url'));
+      if (fromStorage) return fromStorage;
+
+      const protocol = window.location.protocol;
+      const host = window.location.hostname;
+      const isLocal = host === 'localhost' || host === '127.0.0.1';
+
+      if ((protocol === 'http:' || protocol === 'https:') && window.location.port === '8000') {
+        return `${protocol}//${window.location.host}`;
+      }
+
+      if (!isLocal && (protocol === 'http:' || protocol === 'https:')) {
+        return `${protocol}//${window.location.host}`;
+      }
+
+      return 'http://127.0.0.1:8000';
+    })();
+
+    const form = document.getElementById('registerForm');
+    const msg = document.getElementById('msg');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const apiSettingsLink = document.getElementById('apiSettingsLink');
+    const apiResetLink = document.getElementById('apiResetLink');
+
+    function setMessage(text, type = 'info') {
+      msg.textContent = text;
+      msg.style.color = type === 'error' ? 'var(--color-neon-purple)' : type === 'success' ? 'var(--color-neon-blue)' : 'var(--text-secondary)';
+    }
+
+    function openApiSettings() {
+      const current = localStorage.getItem('cyber_api_base_url') || API_BASE_URL;
+      const value = prompt('Enter backend API base URL (example: https://your-backend-domain)', current || '');
+      if (value === null) return;
+      const normalized = normalizeApiBaseUrl(value);
+      if (!normalized) {
+        localStorage.removeItem('cyber_api_base_url');
+        setMessage('API override removed. Using default endpoint.', 'info');
+        return;
+      }
+      localStorage.setItem('cyber_api_base_url', normalized);
+      setMessage(`API endpoint updated to: ${normalized}`, 'success');
+      setTimeout(() => window.location.reload(), 250);
+    }
+
+    apiSettingsLink.addEventListener('click', (event) => {
+      event.preventDefault();
+      openApiSettings();
+    });
+
+    apiResetLink.addEventListener('click', (event) => {
+      event.preventDefault();
+      localStorage.removeItem('cyber_api_base_url');
+      setMessage('API endpoint reset. Reloading...', 'info');
+      setTimeout(() => window.location.reload(), 250);
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim().toLowerCase();
+
+      if (name.length < 2) {
+        setMessage('Enter a valid full name.', 'error');
+        return;
+      }
+      if (!email.includes('@')) {
+        setMessage('Enter a valid email address.', 'error');
+        return;
+      }
+
+      setMessage('Creating account...', 'info');
+      try {
+        const response = await fetch(`${API_BASE_URL}/user/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email })
+        });
+
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(data.detail || 'Could not create account');
+        }
+
+        localStorage.removeItem('pending_user_name');
+        localStorage.removeItem('pending_user_email');
+        localStorage.setItem('user_session_active', 'true');
+        localStorage.setItem('user_name', name);
+        localStorage.setItem('user_email', email);
+        setMessage('Account created successfully. Redirecting to dashboard...', 'success');
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 700);
+      } catch (error) {
+        const fallback = 'Could not create account. Open API Settings and set your backend URL.';
+        const displayMessage = error && String(error.message || '').toLowerCase().includes('failed to fetch')
+          ? fallback
+          : (error.message || fallback);
+        setMessage(displayMessage, 'error');
+      }
+    });
+  </script>
+</body>
+</html>

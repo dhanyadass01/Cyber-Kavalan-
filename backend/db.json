@@ -1,0 +1,47 @@
+{
+    "reports": [
+        {
+            "type": "UPI Fraud",
+            "description": "Fake payment request",
+            "district": "Delhi",
+            "ref_id": "REF-123456",
+            "timestamp": "2026-03-05 14:30:00"
+        },
+        {
+            "type": "Phishing Link",
+            "description": "Fake KYC update link",
+            "district": "Mumbai",
+            "ref_id": "REF-234567",
+            "timestamp": "2026-03-05 15:45:00"
+        },
+        {
+            "type": "Fraudulent Call",
+            "description": "Impersonating bank official",
+            "district": "Bangalore",
+            "ref_id": "REF-345678",
+            "timestamp": "2026-03-05 16:20:00"
+        },
+        {
+            "type": "Scam SMS",
+            "description": "Lucky draw winner SMS",
+            "district": "Chennai",
+            "ref_id": "REF-456789",
+            "timestamp": "2026-03-05 17:10:00"
+        },
+        {
+            "type": "Fake Website",
+            "description": "Fake e-commerce site",
+            "district": "Hyderabad",
+            "ref_id": "REF-567890",
+            "timestamp": "2026-03-05 18:05:00"
+        },
+        {
+            "type": "phishing",
+            "description": "malicious link about for buying the gold in cheap rate ",
+            "district": "Coimbatore",
+            "ref_id": "REF-377977",
+            "timestamp": "2026-03-06 01:43:00"
+        }
+    ],
+    "districts": []
+}

@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Login - Cyber Kavalan</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-neon-blue: #00f2ff;
+      --color-neon-purple: #bc13fe;
+      --color-cyber-black: #000000;
+      --bg-base: var(--color-cyber-black);
+      --bg-surface: #04060f;
+      --bg-elevated: #090b1a;
+      --bg-input: #101426;
+      --border-primary: rgba(0, 242, 255, 0.3);
+      --border-subtle: rgba(0, 242, 255, 0.14);
+      --text-primary: #ffffff;
+      --text-secondary: #a6b4cf;
+      --text-muted: #6f7f9d;
+      --gradient-primary: linear-gradient(135deg, var(--color-neon-blue), var(--color-neon-purple));
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+    body {
+      display: flex;
+      min-height: 100vh;
+      min-height: 100svh;
+      background-color: var(--bg-base);
+      background-image: url('assets/login-bg.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: var(--text-primary);
+      position: relative;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .split-layout {
+      display: flex;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+    .left-panel {
+      flex: 1;
+      padding: 4rem 4rem;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border-subtle);
+      background: rgba(4, 6, 15, 0.62);
+      backdrop-filter: blur(3px);
+    }
+    .right-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 4rem;
+      background-color: rgba(4, 6, 15, 0.68);
+      backdrop-filter: blur(4px);
+    }
+    /* Left Panel Content */
+    .system-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--color-neon-blue);
+      border: 1px solid var(--border-primary);
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      background-color: rgba(0, 242, 255, 0.08);
+      margin-bottom: 2rem;
+      align-self: flex-start;
+    }
+    .brand-title {
+      font-size: 4.5rem;
+      font-weight: 900;
+      letter-spacing: -2px;
+      line-height: 1;
+      margin-bottom: 1.5rem;
+    }
+    .brand-title .dot {
+      color: var(--color-neon-blue);
+    }
+    .brand-subtitle {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+      max-width: 450px;
+      line-height: 1.6;
+      margin-bottom: 4rem;
+    }
+    .highlight {
+      color: var(--color-neon-blue);
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem 2rem;
+    }
+    .feature-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-neon-blue);
+      background-color: rgba(0, 242, 255, 0.08);
+    }
+    .feature-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .feature-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .terminal-footer {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .terminal-dots {
+      display: flex;
+      gap: 4px;
+    }
+    .t-dot {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--bg-input);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.5rem;
+      color: var(--color-neon-blue);
+    }
+
+    /* Right Panel Content */
+    .auth-container {
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    .auth-icon-wrap {
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      background: var(--gradient-primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin: 0 auto 1.5rem;
+      box-shadow: 0 10px 25px rgba(0, 242, 255, 0.2);
+    }
+    .auth-title {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.5px;
+    }
+    .auth-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 2.5rem;
+    }
+    .input-group {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+    .input-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .auth-input {
+      width: 100%;
+      background-color: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      color: white;
+      padding: 1rem 1rem 1rem 2.5rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+    .auth-input:focus {
+      outline: none;
+      border-color: var(--color-neon-blue);
+      background-color: #14182d;
+      box-shadow: 0 0 0 1px var(--color-neon-blue);
+    }
+    .auth-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-top: 1rem;
+    }
+    .persist-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .checkbox-custom {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      background-color: var(--bg-input);
+      border: 1px solid #2d3748;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .checkbox-custom:checked {
+      background-color: var(--color-neon-blue);
+      border-color: var(--color-neon-blue);
+    }
+    .restore-link {
+      color: var(--color-neon-blue);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .restore-link:hover {
+      text-shadow: 0 0 8px rgba(0, 242, 255, 0.5);
+    }
+    .api-tools {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 0.9rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+    }
+    .api-tools a {
+      color: var(--color-neon-blue);
+      text-decoration: none;
+    }
+    .btn-login {
+      width: 100%;
+      background: var(--gradient-primary);
+      color: white;
+      border: none;
+      padding: 1rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 20px rgba(0, 242, 255, 0.2);
+    }
+    .btn-login:hover {
+      filter: brightness(1.1);
+      transform: translateY(-2px);
+      box-shadow: 0 15px 25px rgba(0, 242, 255, 0.3);
+    }
+    .enterprise-footer {
+      margin-top: 5rem;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    .auth-message {
+      margin-top: 0.75rem;
+      min-height: 1.2rem;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      text-align: left;
+    }
+    .footer-icons {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      margin-top: 1rem;
+      font-size: 1rem;
+      color: var(--text-muted);
+    }
+    
+    @media (max-width: 900px) {
+      .split-layout {
+        flex-direction: column;
+      }
+      .left-panel {
+        display: none; /* Hide left panel on mobile */
+      }
+      .right-panel {
+        padding: 2rem;
+      }
+    }
+    @media (max-width: 560px) {
+      body {
+        min-height: 100svh;
+        align-items: flex-start;
+      }
+      .right-panel {
+        padding: 1rem;
+        justify-content: flex-start;
+      }
+      .auth-container {
+        max-width: 100%;
+        margin-top: 0.5rem;
+      }
+      .auth-title {
+        font-size: 1.75rem;
+      }
+      .auth-subtitle {
+        margin-bottom: 1.5rem;
+      }
+      .auth-options {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.65rem;
+      }
+      .btn-login {
+        padding: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="split-layout">
+    <!-- Left Panel -->
+    <div class="left-panel">
+      <div class="system-status">
+        <i class="fas fa-shield-alt"></i> SYSTEM OPERATIONAL
+      </div>
+      
+      <h1 class="brand-title">CYBER KAVALAN<span class="dot">.</span></h1>
+      
+      <p class="brand-subtitle">
+        The national standard for <span class="highlight">Intelligent Cyber Protection</span>.
+      </p>
+
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="feature-icon"><i class="fas fa-search-plus"></i></div>
+          <div class="feature-title">AI THREAT SCANNER</div>
+          <div class="feature-desc">Real-time URL and message analysis to detect phishing and scams instantly.</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon"><i class="fas fa-map-marked-alt"></i></div>
+          <div class="feature-title">LIVE HOTSPOT TRACKING</div>
+          <div class="feature-desc">Interactive maps flagging active threat zones across India to keep you alert.</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon"><i class="fas fa-language"></i></div>
+          <div class="feature-title">MULTILINGUAL AWARENESS</div>
+          <div class="feature-desc">Regional language support ensuring every citizen understands digital safety.</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon"><i class="fas fa-users"></i></div>
+          <div class="feature-title">COMMUNITY REPORTING</div>
+          <div class="feature-desc">Empowering users to log scams, protecting the community from emerging fraud.</div>
+        </div>
+      </div>
+
+
+    </div>
+
+    <!-- Right Panel -->
+    <div class="right-panel">
+      <div class="auth-container">
+        <div class="auth-icon-wrap">
+          <i class="fas fa-user-shield"></i>
+        </div>
+        
+        <h2 class="auth-title">Welcome Back</h2>
+        <p class="auth-subtitle">User Portal access to Cyber Kavalan dashboard.</p>
+
+        <form id="userLoginForm">
+          <div class="input-group">
+            <i class="fas fa-user input-icon"></i>
+            <input type="text" id="userName" class="auth-input" placeholder="Your full name" required>
+          </div>
+          
+          <div class="input-group">
+            <i class="fas fa-envelope input-icon"></i>
+            <input type="email" id="userEmail" class="auth-input" placeholder="you@example.com" required>
+          </div>
+
+          <div class="auth-message" id="authMessage"></div>
+
+          <div class="auth-options">
+            <label class="persist-label">
+              <input type="checkbox" class="checkbox-custom">
+              PERSIST SESSION
+            </label>
+            <a href="register.html" class="restore-link" style="opacity: 0.9;">CREATE ACCOUNT</a>
+          </div>
+
+          <div class="auth-options" style="justify-content:center; margin-top:-0.4rem; margin-bottom:1.2rem;">
+            <a href="admin-login.html" class="restore-link" style="opacity: 0.9;">ADMIN PORTAL</a>
+          </div>
+
+          <div class="api-tools">
+            <a href="#" id="apiSettingsLink">API Settings</a>
+            <span>•</span>
+            <a href="#" id="apiResetLink">Reset API</a>
+          </div>
+
+          <button type="submit" id="userLoginBtn" class="btn-login">
+            Login to Cyber Kavalan <i class="fas fa-arrow-right"></i>
+          </button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function normalizeApiBaseUrl(value) {
+      return String(value || '').trim().replace(/\/+$/, '');
+    }
+
+    const API_BASE_URL = (() => {
+      const params = new URLSearchParams(window.location.search);
+      const fromQuery = normalizeApiBaseUrl(params.get('api'));
+      if (fromQuery) {
+        localStorage.setItem('cyber_api_base_url', fromQuery);
+        return fromQuery;
+      }
+
+      const fromWindow = normalizeApiBaseUrl(window.__API_BASE_URL__);
+      if (fromWindow) return fromWindow;
+
+      const fromStorage = normalizeApiBaseUrl(localStorage.getItem('cyber_api_base_url'));
+      if (fromStorage) return fromStorage;
+
+      const protocol = window.location.protocol;
+      const host = window.location.hostname;
+      const isLocal = host === 'localhost' || host === '127.0.0.1';
+
+      if ((protocol === 'http:' || protocol === 'https:') && window.location.port === '8000') {
+        return `${protocol}//${window.location.host}`;
+      }
+
+      if (!isLocal && (protocol === 'http:' || protocol === 'https:')) {
+        return `${protocol}//${window.location.host}`;
+      }
+
+      return 'http://127.0.0.1:8000';
+    })();
+    const loginForm = document.getElementById('userLoginForm');
+    const authMessage = document.getElementById('authMessage');
+    const userNameInput = document.getElementById('userName');
+    const userEmailInput = document.getElementById('userEmail');
+    const apiSettingsLink = document.getElementById('apiSettingsLink');
+    const apiResetLink = document.getElementById('apiResetLink');
+
+    const pendingName = localStorage.getItem('pending_user_name') || localStorage.getItem('user_name') || '';
+    const pendingEmail = localStorage.getItem('pending_user_email') || localStorage.getItem('user_email') || '';
+    if (pendingName) userNameInput.value = pendingName;
+    if (pendingEmail) userEmailInput.value = pendingEmail;
+
+    if (localStorage.getItem('user_session_active') === 'true') {
+      window.location.href = 'index.html';
+    }
+
+    function setMessage(text, type = 'info') {
+      authMessage.textContent = text;
+      authMessage.style.color = type === 'error' ? 'var(--color-neon-purple)' : type === 'success' ? 'var(--color-neon-blue)' : 'var(--text-secondary)';
+    }
+
+    function openApiSettings() {
+      const current = localStorage.getItem('cyber_api_base_url') || API_BASE_URL;
+      const value = prompt('Enter backend API base URL (example: https://your-backend-domain)', current || '');
+      if (value === null) return;
+      const normalized = normalizeApiBaseUrl(value);
+      if (!normalized) {
+        localStorage.removeItem('cyber_api_base_url');
+        setMessage('API override removed. Using default endpoint.', 'info');
+        return;
+      }
+      localStorage.setItem('cyber_api_base_url', normalized);
+      setMessage(`API endpoint updated to: ${normalized}`, 'success');
+      setTimeout(() => window.location.reload(), 250);
+    }
+
+    apiSettingsLink.addEventListener('click', (event) => {
+      event.preventDefault();
+      openApiSettings();
+    });
+
+    apiResetLink.addEventListener('click', (event) => {
+      event.preventDefault();
+      localStorage.removeItem('cyber_api_base_url');
+      setMessage('API endpoint reset. Reloading...', 'info');
+      setTimeout(() => window.location.reload(), 250);
+    });
+
+    loginForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const userName = userNameInput.value.trim();
+      const userEmail = userEmailInput.value.trim().toLowerCase();
+
+      if (userName.length < 2) {
+        setMessage('Enter a valid full name.', 'error');
+        return;
+      }
+
+      if (!userEmail.includes('@')) {
+        setMessage('Enter a valid email address.', 'error');
+        return;
+      }
+
+      setMessage('Signing you in...', 'info');
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/user/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: userName, email: userEmail })
+        });
+
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(data.detail || 'Login failed');
+        }
+
+        localStorage.removeItem('pending_user_name');
+        localStorage.removeItem('pending_user_email');
+        localStorage.setItem('user_session_active', 'true');
+        localStorage.setItem('user_name', data.name || userName);
+        localStorage.setItem('user_email', userEmail);
+
+        setMessage('Login successful. Redirecting...', 'success');
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 500);
+      } catch (error) {
+        const fallback = 'Unable to login right now. Open API Settings and set your backend URL.';
+        const displayMessage = error && String(error.message || '').toLowerCase().includes('failed to fetch')
+          ? fallback
+          : (error.message || fallback);
+        setMessage(displayMessage, 'error');
+      }
+    });
+  </script>
+</body>
+</html>

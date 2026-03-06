@@ -1,0 +1,759 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Cyber Kavalan – Intelligent cybersecurity platform protecting users from phishing, scams, and digital fraud across India. Serving all digital citizens."
+    />
+    <meta
+      name="keywords"
+      content="cybersecurity, phishing detector, scam alert, UPI fraud, cyber kavalan, India cybersecurity, threat map"
+    />
+    <title>Cyber Kavalan – Your Digital Guardian</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+      <canvas id="bgCanvas"></canvas>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+      <div class="nav-container">
+        <div class="nav-brand">
+          <div class="brand-icon">
+            <i class="fas fa-shield-halved"></i>
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">Cyber Kavalan</span>
+          </div>
+        </div>
+        <ul class="nav-links" id="navLinks">
+          <li>
+            <a href="#home" id="nav1" class="nav-link active" data-section="home">Home</a>
+          </li>
+          <li>
+            <a href="#scanner" id="nav2" class="nav-link" data-section="scanner"
+              >Scanner</a
+            >
+          </li>
+
+          <li>
+            <a href="#heatmap" id="nav4" class="nav-link" data-section="heatmap"
+              >Threat Map</a
+            >
+          </li>
+          <li>
+            <a href="#report" id="nav5" class="nav-link" data-section="report">Report</a>
+          </li>
+          <li>
+            <a href="#awareness" id="nav6" class="nav-link" data-section="awareness"
+              >Awareness</a
+            >
+          </li>
+        </ul>
+        <div class="nav-actions">
+          <button class="btn btn-secondary" id="apiSettingsBtn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;"><i class="fas fa-plug"></i> API</button>
+          <button class="btn btn-secondary" id="apiResetBtn" style="padding: 0.4rem 0.65rem; font-size: 0.85rem;"><i class="fas fa-rotate-left"></i></button>
+          <a href="login.html" id="userLogout" class="btn btn-secondary" style="padding: 0.4rem 1rem; font-size: 0.85rem;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          <!-- Language Selector -->
+          <div class="lang-selector" id="langSelector">
+            <button class="lang-selector-btn" id="langSelectorBtn" onclick="toggleLangDropdown()">
+              <i class="fas fa-globe"></i>
+              <span id="langCurrentFlag">🇬🇧</span>
+              <span id="langCurrentName">English</span>
+              <i class="fas fa-chevron-down lang-chevron" id="langChevron"></i>
+            </button>
+            <div class="lang-dropdown" id="langDropdown">
+              <div class="lang-dropdown-header">Select Language</div>
+              <div class="lang-grid">
+                <button class="lang-option active" data-lang="en" onclick="selectLanguage('en','🇬🇧','English')">
+                  <span class="lang-flag">🇬🇧</span>
+                  <div class="lang-info"><div class="lang-native">English</div><div class="lang-english">English</div></div>
+                </button>
+                <button class="lang-option" data-lang="ta" onclick="selectLanguage('ta','🇮🇳','தமிழ்')">
+                  <span class="lang-flag">🇮🇳</span>
+                  <div class="lang-info"><div class="lang-native">தமிழ்</div><div class="lang-english">Tamil</div></div>
+                </button>
+                <button class="lang-option" data-lang="hi" onclick="selectLanguage('hi','🇮🇳','हिन्दी')">
+                  <span class="lang-flag">🇮🇳</span>
+                  <div class="lang-info"><div class="lang-native">हिन्दी</div><div class="lang-english">Hindi</div></div>
+                </button>
+                <button class="lang-option" data-lang="te" onclick="selectLanguage('te','🇮🇳','తెలుగు')">
+                  <span class="lang-flag">🇮🇳</span>
+                  <div class="lang-info"><div class="lang-native">తెలుగు</div><div class="lang-english">Telugu</div></div>
+                </button>
+                <button class="lang-option" data-lang="kn" onclick="selectLanguage('kn','🇮🇳','ಕನ್ನಡ')">
+                  <span class="lang-flag">🇮🇳</span>
+                  <div class="lang-info"><div class="lang-native">ಕನ್ನಡ</div><div class="lang-english">Kannada</div></div>
+                </button>
+                <button class="lang-option" data-lang="ml" onclick="selectLanguage('ml','🇮🇳','മലയാളം')">
+                  <span class="lang-flag">🇮🇳</span>
+                  <div class="lang-info"><div class="lang-native">മലയാളം</div><div class="lang-english">Malayalam</div></div>
+                </button>
+                <button class="lang-option" data-lang="es" onclick="selectLanguage('es','🇪🇸','Español')">
+                  <span class="lang-flag">🇪🇸</span>
+                  <div class="lang-info"><div class="lang-native">Español</div><div class="lang-english">Spanish</div></div>
+                </button>
+                <button class="lang-option" data-lang="fr" onclick="selectLanguage('fr','🇫🇷','Français')">
+                  <span class="lang-flag">🇫🇷</span>
+                  <div class="lang-info"><div class="lang-native">Français</div><div class="lang-english">French</div></div>
+                </button>
+                <button class="lang-option" data-lang="ar" onclick="selectLanguage('ar','🇸🇦','العربية')">
+                  <span class="lang-flag">🇸🇦</span>
+                  <div class="lang-info"><div class="lang-native">العربية</div><div class="lang-english">Arabic</div></div>
+                </button>
+                <button class="lang-option" data-lang="zh" onclick="selectLanguage('zh','🇨🇳','中文')">
+                  <span class="lang-flag">🇨🇳</span>
+                  <div class="lang-info"><div class="lang-native">中文</div><div class="lang-english">Chinese</div></div>
+                </button>
+                <button class="lang-option" data-lang="pt" onclick="selectLanguage('pt','🇧🇷','Português')">
+                  <span class="lang-flag">🇧🇷</span>
+                  <div class="lang-info"><div class="lang-native">Português</div><div class="lang-english">Portuguese</div></div>
+                </button>
+                <button class="lang-option" data-lang="de" onclick="selectLanguage('de','🇩🇪','Deutsch')">
+                  <span class="lang-flag">🇩🇪</span>
+                  <div class="lang-info"><div class="lang-native">Deutsch</div><div class="lang-english">German</div></div>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="threat-indicator">
+            <span class="pulse-dot"></span>
+            <span id="threatStatus">Live Monitoring</span>
+          </div>
+          <button class="nav-hamburger" id="hamburger">
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ===== HERO SECTION ===== -->
+    <section class="hero" id="home">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          <span id="heroBadge"
+            >AI-Powered Cyber Protection · India's Digital Guardian</span
+          >
+        </div>
+        <h1 class="hero-title" id="heroTitle">
+          Protect Yourself From<br />
+          <span class="gradient-text">Digital Scams & Fraud</span>
+        </h1>
+        <p class="hero-subtitle" id="heroSubtitle">
+          Cyber Kavalan uses advanced machine learning to detect phishing
+          links, scam messages, fake websites, and fraudulent calls — keeping
+          you safe in the digital world.
+        </p>
+        <div class="hero-cta">
+          <a href="#scanner" class="btn btn-primary" id="heroBtn1">
+            <i class="fas fa-search-plus"></i>
+            <span>Scan Now</span>
+          </a>
+        </div>
+        <div class="hero-slogan" id="heroSlogan">
+          Stay Alert. Verify Every Click. Stay Cyber Safe.
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="shield-3d">
+          <div class="shield-outer">
+            <div class="shield-inner">
+              <i class="fas fa-shield-halved shield-icon"></i>
+              <div class="shield-rings">
+                <div class="ring ring-1"></div>
+                <div class="ring ring-2"></div>
+                <div class="ring ring-3"></div>
+              </div>
+            </div>
+          </div>
+          <div class="threat-bubbles">
+            <div class="threat-bubble tb-1">
+              <i class="fas fa-fish"></i> Phishing
+            </div>
+            <div class="threat-bubble tb-2">
+              <i class="fas fa-bug"></i> Malware
+            </div>
+            <div class="threat-bubble tb-3">
+              <i class="fas fa-credit-card"></i> UPI Fraud
+            </div>
+            <div class="threat-bubble tb-4">
+              <i class="fas fa-phone-slash"></i> Fake Call
+            </div>
+            <div class="threat-bubble tb-5">
+              <i class="fas fa-globe"></i> Fake Site
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SCANNER SECTION ===== -->
+    <section class="section" id="scanner">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title" id="scannerTitle">
+            <i class="fas fa-shield-virus"></i> AI Threat Scanner
+          </h2>
+          <p class="section-subtitle" id="scannerSubtitle">
+            Analyze links, messages, and images for potential threats
+          </p>
+        </div>
+
+        <!-- Scanner Tabs -->
+        <div class="scanner-tabs">
+          <button class="tab-btn active" data-tab="link" id="tabLink">
+            <i class="fas fa-link"></i> <span>Link</span>
+          </button>
+          <button class="tab-btn" data-tab="message" id="tabMessage">
+            <i class="fas fa-envelope"></i> <span>Message</span>
+          </button>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="scanner-content">
+          <!-- Link Scanner -->
+          <div class="tab-content active" id="tab-link">
+            <div class="scanner-card">
+              <div class="scanner-input-area">
+                <div class="input-icon"><i class="fas fa-link"></i></div>
+                <input
+                  type="url"
+                  id="linkInput"
+                  class="scanner-input"
+                  placeholder="Paste suspicious URL here... e.g. http://bank-secure-login.xyz"
+                />
+                <button class="scan-btn" id="scanLinkBtn" onclick="scanLink()">
+                  <i class="fas fa-search"></i> Scan
+                </button>
+              </div>
+              <div class="scanner-tips">
+                <span
+                  ><i class="fas fa-lightbulb"></i>
+                  <span id="linkTip"
+                    >Tip: Paste any suspicious link you received via SMS,
+                    WhatsApp, or Email</span
+                  ></span
+                >
+              </div>
+              <div
+                class="scan-result"
+                id="linkResult"
+                style="display: none"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Message Scanner -->
+          <div class="tab-content" id="tab-message">
+            <div class="scanner-card">
+              <textarea
+                id="messageInput"
+                class="scanner-textarea"
+                placeholder="Paste the suspicious SMS, WhatsApp or email message here..."
+                rows="5"
+              ></textarea>
+              <div class="scanner-actions">
+                <button class="scan-btn" onclick="scanMessage()">
+                  <i class="fas fa-shield-virus"></i> Analyze Message
+                </button>
+                <button class="clear-btn" onclick="clearMessage()">
+                  <i class="fas fa-eraser"></i> Clear
+                </button>
+              </div>
+              <div
+                class="scan-result"
+                id="messageResult"
+                style="display: none"
+              ></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ===== THREAT HEATMAP SECTION ===== -->
+    <section class="section" id="heatmap">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title" id="heatmapTitle">
+            <i class="fas fa-map-marked-alt"></i> Real-Time Threat Heatmap
+          </h2>
+          <p class="section-subtitle" id="heatmapSubtitle">
+            Live scam activity across India
+          </p>
+        </div>
+
+        <div class="heatmap-layout">
+          <div class="heatmap-main">
+            <div class="map-container">
+              <div id="map" style="width: 100%; height: 500px; border-radius: 20px; border: 1px solid var(--primary-light);"></div>
+              <div class="map-legend">
+                <div class="legend-title" id="legendTitle">Threat Level</div>
+                <div class="legend-items">
+                  <div class="legend-item">
+                    <span
+                      class="legend-color"
+                      style="background: #ff0000"
+                    ></span
+                    ><span id="l1">Critical</span>
+                  </div>
+                  <div class="legend-item">
+                    <span
+                      class="legend-color"
+                      style="background: #ff6600"
+                    ></span
+                    ><span id="l2">High</span>
+                  </div>
+                  <div class="legend-item">
+                    <span
+                      class="legend-color"
+                      style="background: #ffcc00"
+                    ></span
+                    ><span id="l3">Medium</span>
+                  </div>
+                  <div class="legend-item">
+                    <span
+                      class="legend-color"
+                      style="background: #00cc44"
+                    ></span
+                    ><span id="l4">Low</span>
+                  </div>
+                </div>
+              </div>
+              <div class="map-overlay-text" id="mapClickHint">
+                Click on a district to view details
+              </div>
+            </div>
+          </div>
+
+          <div class="heatmap-sidebar">
+            <div class="sidebar-card">
+              <h3 class="sidebar-title" id="hotspotTitle">
+                <i class="fas fa-fire"></i> Top Hotspots
+              </h3>
+              <div class="hotspot-list" id="hotspotList"></div>
+            </div>
+            <div class="sidebar-card">
+              <h3 class="sidebar-title" id="recentTitle">
+                <i class="fas fa-clock"></i> Recent Reports
+              </h3>
+              <div class="recent-list" id="recentList"></div>
+            </div>
+            <div class="sidebar-card stats-mini">
+              <div class="mini-stat">
+                <div class="mini-stat-value" id="todayCount">1,247</div>
+                <div class="mini-stat-label" id="todayLabel">Reports Today</div>
+              </div>
+              <div class="mini-stat">
+                <div class="mini-stat-value" id="weekCount">8,934</div>
+                <div class="mini-stat-label" id="weekLabel">This Week</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="trend-chart-container" style="margin-top: 3rem; background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 20px; padding: 2rem;">
+          <div class="sidebar-title" style="margin-bottom: 1.5rem">
+            <i class="fas fa-chart-line" style="color: var(--primary)"></i> 
+            <span id="trendTitle">Real-Time Threat Trends (Last 24 Hours)</span>
+          </div>
+          <div style="height: 350px; width: 100%;">
+            <canvas id="trendChart"></canvas>
+          </div>
+        </div>
+
+        <!-- District Detail Modal -->
+        <div class="district-modal" id="districtModal" style="display: none">
+          <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">
+              <i class="fas fa-times"></i>
+            </button>
+            <div id="modalContent"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== REPORT SECTION ===== -->
+    <section class="section section-alt" id="report">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title" id="reportTitle">
+            <i class="fas fa-flag"></i> Report a Scam
+          </h2>
+          <p class="section-subtitle" id="reportSubtitle">
+            Help protect your community by reporting scam activities
+          </p>
+        </div>
+
+        <div class="report-layout">
+          <div class="report-form-card">
+            <form id="reportForm" onsubmit="submitReport(event)">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="reportType" id="rtLabel">Scam Type</label>
+                  <select id="reportType" class="form-control" required>
+                    <option value="" id="rtOpt0">-- Select Type --</option>
+                    <option value="phishing" id="rtOpt1">Phishing Link</option>
+                    <option value="upi" id="rtOpt2">UPI Fraud</option>
+                    <option value="call" id="rtOpt3">Fraudulent Call</option>
+                    <option value="sms" id="rtOpt4">Scam SMS</option>
+                    <option value="website" id="rtOpt5">Fake Website</option>
+                    <option value="instagram" id="rtOpt6">
+                      Social Media Scam
+                    </option>
+                    <option value="lottery" id="rtOpt7">Lottery / Prize</option>
+                    <option value="other" id="rtOpt8">Other</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="reportDistrict" id="rdLabel">District</label>
+                  <select id="reportDistrict" class="form-control" required>
+                    <option value="">-- Select District --</option>
+                    <option>Chennai</option>
+                    <option>Coimbatore</option>
+                    <option>Madurai</option>
+                    <option>Salem</option>
+                    <option>Tiruchirappalli</option>
+                    <option>Tirunelveli</option>
+                    <option>Vellore</option>
+                    <option>Erode</option>
+                    <option>Dharmapuri</option>
+                    <option>Kanchipuram</option>
+                    <option>Thanjavur</option>
+                    <option>Cuddalore</option>
+                    <option>Dindigul</option>
+                    <option>Nagapattinam</option>
+                    <option>Tiruppur</option>
+                    <option>Sivagangai</option>
+                    <option>Virudhunagar</option>
+                    <option>Ramanathapuram</option>
+                    <option>Namakkal</option>
+                    <option>Theni</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="reportDesc" id="descLabel">Description</label>
+                <textarea
+                  id="reportDesc"
+                  class="form-control"
+                  rows="4"
+                  placeholder="Describe what happened, include the scam content if possible..."
+                  required
+                ></textarea>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="reportContact" id="contactLabel"
+                    >Scammer's Contact (if any)</label
+                  >
+                  <input
+                    type="text"
+                    id="reportContact"
+                    class="form-control"
+                    placeholder="Phone / UPI / URL"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="reportAmount" id="amountLabel"
+                    >Amount Lost (₹)</label
+                  >
+                  <input
+                    type="number"
+                    id="reportAmount"
+                    class="form-control"
+                    placeholder="0 if none"
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="reportEvidence" id="evidenceLabel"
+                  >Upload Evidence (Screenshot)</label
+                >
+                <div
+                  class="file-upload-mini"
+                  onclick="document.getElementById('reportEvidence').click()"
+                >
+                  <i class="fas fa-paperclip"></i>
+                  <span id="evidenceText">Click to attach screenshot</span>
+                  <input
+                    type="file"
+                    id="reportEvidence"
+                    accept="image/*"
+                    style="display: none"
+                    onchange="showFileName(this)"
+                  />
+                </div>
+              </div>
+
+              <div class="form-check">
+                <input type="checkbox" id="anonymous" />
+                <label for="anonymous" id="anonLabel">Submit anonymously</label>
+              </div>
+
+              <button type="submit" class="submit-btn">
+                <i class="fas fa-paper-plane"></i>
+                <span id="submitBtnText">Submit Report</span>
+              </button>
+            </form>
+          </div>
+
+          <div class="report-info">
+            <div class="info-card urgent-card">
+              <div class="info-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+              </div>
+              <h4 id="urgentTitle">Lost Money? Act Now!</h4>
+              <p id="urgentText">
+                Call National Cyber Crime Helpline immediately
+              </p>
+              <a href="tel:1930" class="helpline-btn">
+                <i class="fas fa-phone-volume"></i> 1930
+              </a>
+            </div>
+            <div class="info-card">
+              <h4 id="whyTitle"><i class="fas fa-users"></i> <span id="whyHeader">Why Report?</span></h4>
+              <ul class="why-list">
+                <li id="why1">
+                  <i class="fas fa-check"></i> Protects others in your community
+                </li>
+                <li id="why2">
+                  <i class="fas fa-check"></i> Helps authorities track scammers
+                </li>
+                <li id="why3">
+                  <i class="fas fa-check"></i> Provides immediate steps to secure your assets
+                </li>
+                <li id="why4">
+                  <i class="fas fa-check"></i> Guides you to freeze compromised accounts
+                </li>
+              </ul>
+            </div>
+            <div class="info-card">
+              <h4 id="tlHelpTitle">
+                <i class="fas fa-headset"></i> National Helplines
+              </h4>
+              <div class="helpline-list">
+                <div class="helpline-item">
+                  <span id="hl1">Cyber Crime</span
+                  ><a href="tel:1930" class="hl-number">1930</a>
+                </div>
+                <div class="helpline-item">
+                  <span id="hl2">Police Control</span
+                  ><a href="tel:100" class="hl-number">100</a>
+                </div>
+                <div class="helpline-item">
+                  <span id="hl3">Consumer Helpline</span
+                  ><a href="tel:1800114000" class="hl-number">1800-114-000</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== AWARENESS SECTION ===== -->
+    <section class="section" id="awareness">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title" id="awarenessTitle">
+            <i class="fas fa-graduation-cap"></i> Cybersecurity Awareness
+          </h2>
+          <p class="section-subtitle" id="awarenessSubtitle">
+            Learn to identify and avoid digital scams
+          </p>
+          <div class="awareness-lang-toggle">
+            <button class="aw-lang-btn active" data-awlang="en" onclick="setAwarenessLang('en',this)">🇬🇧 English</button>
+            <button class="aw-lang-btn" data-awlang="ta" onclick="setAwarenessLang('ta',this)">🇮🇳 தமிழ்</button>
+            <button class="aw-lang-btn" data-awlang="hi" onclick="setAwarenessLang('hi',this)">🇮🇳 हिन्दी</button>
+            <button class="aw-lang-btn" data-awlang="te" onclick="setAwarenessLang('te',this)">🇮🇳 తెలుగు</button>
+            <button class="aw-lang-btn" data-awlang="kn" onclick="setAwarenessLang('kn',this)">🇮🇳 ಕನ್ನಡ</button>
+            <button class="aw-lang-btn" data-awlang="ml" onclick="setAwarenessLang('ml',this)">🇮🇳 മലയാളം</button>
+            <button class="aw-lang-btn" data-awlang="es" onclick="setAwarenessLang('es',this)">🇪🇸 Español</button>
+            <button class="aw-lang-btn" data-awlang="fr" onclick="setAwarenessLang('fr',this)">🇫🇷 Français</button>
+            <button class="aw-lang-btn" data-awlang="ar" onclick="setAwarenessLang('ar',this)">🇸🇦 العربية</button>
+            <button class="aw-lang-btn" data-awlang="zh" onclick="setAwarenessLang('zh',this)">🇨🇳 中文</button>
+            <button class="aw-lang-btn" data-awlang="pt" onclick="setAwarenessLang('pt',this)">🇧🇷 Português</button>
+            <button class="aw-lang-btn" data-awlang="de" onclick="setAwarenessLang('de',this)">🇩🇪 Deutsch</button>
+          </div>
+        </div>
+
+        <div class="awareness-grid" id="awarenessGrid"></div>
+
+        <!-- Quiz Section -->
+        <div class="quiz-section">
+          <div class="quiz-header">
+            <h3 id="quizTitle">
+              <i class="fas fa-question-circle"></i> Test Your Awareness
+            </h3>
+            <p id="quizSubtitle">Can you spot a scam?</p>
+          </div>
+          <div class="quiz-card" id="quizCard">
+            <div class="quiz-question" id="quizQuestion"></div>
+            <div class="quiz-options" id="quizOptions"></div>
+            <div
+              class="quiz-feedback"
+              id="quizFeedback"
+              style="display: none"
+            ></div>
+            <button
+              class="quiz-next-btn"
+              id="quizNextBtn"
+              onclick="nextQuestion()"
+              style="display: none"
+            >
+              Next Question <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+          <div class="quiz-progress">
+            <div class="quiz-score" id="quizScore">Score: 0 / 0</div>
+            <div class="quiz-bar-container">
+              <div class="quiz-bar" id="quizBar" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+      <div class="footer-container">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <i class="fas fa-shield-halved"></i>
+            <span>Cyber Kavalan</span>
+          </div>
+          <p id="footerDesc">
+            Protecting India's digital citizens from cyber threats with
+            AI-powered intelligence.
+          </p>
+        </div>
+        <div class="footer-links">
+          <h4 id="footerQuickLinks">Quick Links</h4>
+          <ul>
+            <li><a href="#scanner" id="fl1">AI Scanner</a></li>
+
+            <li><a href="#heatmap" id="fl3">Threat Map</a></li>
+            <li><a href="#report" id="fl4">Report Scam</a></li>
+            <li><a href="#awareness" id="fl5">Awareness</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4 id="footerResources">Resources</h4>
+          <ul>
+            <li><a href="#" id="fl6">API Documentation</a></li>
+            <li><a href="#" id="fl7">Privacy Policy</a></li>
+            <li><a href="#" id="fl8">Terms of Service</a></li>
+            <li><a href="#" id="fl9">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-emergency">
+          <h4 id="footerEmTitle">Emergency Contacts</h4>
+          <div class="emergency-item">
+            <i class="fas fa-phone-alt"></i>
+            <div>
+              <div class="em-title" id="em1">Cyber Crime Helpline</div>
+              <a href="tel:1930" class="em-number">1930</a>
+            </div>
+          </div>
+          <div class="emergency-item">
+            <i class="fas fa-shield-alt"></i>
+            <div>
+              <div class="em-title" id="em2">Local Police</div>
+              <a href="tel:100" class="em-number">100</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p id="footerCopy">
+          © 2026 Cyber Kavalan. Protecting India's
+          Digital Citizens.
+        </p>
+      </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+      <i class="fas fa-check-circle"></i>
+      <span id="toastMsg">Notification message</span>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none">
+      <div class="loading-content">
+        <div class="loading-radar"></div>
+        <p id="loadingText">Analyzing threat...</p>
+      </div>
+    </div>
+
+    <script>
+      function clearAllSessions() {
+        localStorage.removeItem('user_session_active');
+        localStorage.removeItem('user_name');
+        localStorage.removeItem('user_email');
+        localStorage.removeItem('admin_session_active');
+        localStorage.removeItem('admin_name');
+        localStorage.removeItem('admin_email');
+      }
+
+      function enforcePortalSession() {
+        const userSessionActive = localStorage.getItem('user_session_active') === 'true';
+        const adminSessionActive = localStorage.getItem('admin_session_active') === 'true';
+        if (adminSessionActive) {
+          window.location.href = 'admin-dashboard.html';
+          return;
+        }
+        if (!userSessionActive && !adminSessionActive) {
+          clearAllSessions();
+          window.location.href = 'login.html';
+        }
+      }
+
+      document.getElementById('userLogout')?.addEventListener('click', (event) => {
+        event.preventDefault();
+        clearAllSessions();
+        window.location.href = 'login.html';
+      });
+
+      document.getElementById('apiSettingsBtn')?.addEventListener('click', () => {
+        if (typeof window.openApiSettingsDialog === 'function') {
+          window.openApiSettingsDialog();
+        }
+      });
+
+      document.getElementById('apiResetBtn')?.addEventListener('click', () => {
+        if (typeof window.resetApiBaseUrl === 'function') {
+          window.resetApiBaseUrl();
+        }
+      });
+
+      enforcePortalSession();
+    </script>
+    <script src="app.js"></script>
+    <!-- Google Maps API with Heatmap Visualization library -->
+    <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBNDxxaQZDqDOTH8Af7yvypfzRzmTuXqjU&libraries=visualization&callback=initMap"></script>
+  </body>
+</html>

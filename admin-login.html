@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - Cyber Kavalan</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root { --color-neon-blue:#00f2ff; --color-neon-purple:#bc13fe; --color-cyber-black:#000000; --bg-base:var(--color-cyber-black); --bg-surface:#04060f; --bg-input:#101426; --border-subtle:rgba(0,242,255,.14); --text-primary:#fff; --text-secondary:#a6b4cf; --gradient-primary:linear-gradient(135deg,var(--color-neon-blue),var(--color-neon-purple)); }
+    *{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',sans-serif}
+    body{min-height:100vh;min-height:100svh;background:var(--bg-base);background-image:url('assets/login-bg.jpg');background-size:cover;background-position:center;background-repeat:no-repeat;color:var(--text-primary);display:flex;align-items:center;justify-content:center;padding:1.5rem;position:relative;overflow-x:hidden;overflow-y:auto}
+    body::before{content:"";position:fixed;inset:0;background:rgba(0,0,0,.45);pointer-events:none;z-index:0}
+    .card{width:100%;max-width:420px;background:rgba(4,6,15,.68);backdrop-filter:blur(4px);border:1px solid var(--border-subtle);border-radius:14px;padding:2rem;position:relative;z-index:1}
+    .icon{width:56px;height:56px;border-radius:14px;margin:0 auto 1rem;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;font-size:1.4rem}
+    h1{font-size:1.65rem;text-align:center;margin-bottom:.4rem} p{text-align:center;color:var(--text-secondary);margin-bottom:1.5rem;font-size:.9rem}
+    .input-group{position:relative;margin-bottom:.9rem}.input-group i{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);color:#6f7f9d}
+    input{width:100%;background:var(--bg-input);border:1px solid var(--border-subtle);border-radius:8px;color:white;padding:.9rem .9rem .9rem 2.4rem}
+    input:focus{outline:none;border-color:var(--color-neon-blue);box-shadow:0 0 0 1px var(--color-neon-blue)}
+    .msg{min-height:1.2rem;margin:.4rem 0 .6rem;font-size:.85rem;color:var(--text-secondary)}
+    button{width:100%;border:none;border-radius:8px;padding:.95rem;font-weight:700;color:white;background:var(--gradient-primary);cursor:pointer}
+    .foot{margin-top:1rem;text-align:center;font-size:.82rem;color:var(--text-secondary)} .foot a{color:var(--color-neon-blue);text-decoration:none}
+    .api-tools{display:flex;justify-content:center;align-items:center;gap:.75rem;margin-top:.8rem;font-size:.76rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary);flex-wrap:wrap}
+    .api-tools a{color:var(--color-neon-blue);text-decoration:none}
+    @media (max-width:560px){
+      body{padding:1rem;min-height:100svh;align-items:flex-start}
+      .card{padding:1.25rem}
+      h1{font-size:1.45rem}
+      p{margin-bottom:1.1rem}
+      input{padding:.82rem .82rem .82rem 2.2rem}
+      button{padding:.88rem}
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon"><i class="fas fa-user-shield"></i></div>
+    <h1>Admin Login</h1>
+    <p>Admin portal access for Cyber Kavalan.</p>
+
+    <form id="adminLoginForm">
+      <div class="input-group"><i class="fas fa-lock"></i><input type="password" id="password" placeholder="Admin password" required></div>
+      <div class="msg" id="msg"></div>
+      <button type="submit">Login as Admin <i class="fas fa-arrow-right"></i></button>
+    </form>
+
+    <div class="foot">Create admin account? <a href="admin-register.html">Register</a></div>
+    <div class="foot">User portal: <a href="login.html">User Login</a></div>
+    <div class="api-tools"><a href="#" id="apiSettingsLink">API Settings</a><span>•</span><a href="#" id="apiResetLink">Reset API</a></div>
+  </div>
+
+  <script>
+    function normalizeApiBaseUrl(value) {
+      return String(value || '').trim().replace(/\/+$/, '');
+    }
+
+    const API_BASE_URL = (() => {
+      const params = new URLSearchParams(window.location.search);
+      const fromQuery = normalizeApiBaseUrl(params.get('api'));
+      if (fromQuery) {
+        localStorage.setItem('cyber_api_base_url', fromQuery);
+        return fromQuery;
+      }
+
+      const fromWindow = normalizeApiBaseUrl(window.__API_BASE_URL__);
+      if (fromWindow) return fromWindow;
+
+      const fromStorage = normalizeApiBaseUrl(localStorage.getItem('cyber_api_base_url'));
+      if (fromStorage) return fromStorage;
+
+      const protocol = window.location.protocol;
+      const host = window.location.hostname;
+      const isLocal = host === 'localhost' || host === '127.0.0.1';
+
+      if ((protocol === 'http:' || protocol === 'https:') && window.location.port === '8000') {
+        return `${protocol}//${window.location.host}`;
+      }
+
+      if (!isLocal && (protocol === 'http:' || protocol === 'https:')) {
+        return `${protocol}//${window.location.host}`;
+      }
+
+      return 'http://127.0.0.1:8000';
+    })();
+
+    const form = document.getElementById('adminLoginForm');
+    const msg = document.getElementById('msg');
+    const passwordInput = document.getElementById('password');
+    const apiSettingsLink = document.getElementById('apiSettingsLink');
+    const apiResetLink = document.getElementById('apiResetLink');
+
+    if (localStorage.getItem('admin_session_active') === 'true' && sessionStorage.getItem('admin_portal_password')) {
+      window.location.href = 'admin-dashboard.html';
+    }
+
+    function setMessage(text, type = 'info') {
+      msg.textContent = text;
+      msg.style.color = type === 'error' ? 'var(--color-neon-purple)' : type === 'success' ? 'var(--color-neon-blue)' : 'var(--text-secondary)';
+    }
+
+    function openApiSettings() {
+      const current = localStorage.getItem('cyber_api_base_url') || API_BASE_URL;
+      const value = prompt('Enter backend API base URL (example: https://your-backend-domain)', current || '');
+      if (value === null) return;
+      const normalized = normalizeApiBaseUrl(value);
+      if (!normalized) {
+        localStorage.removeItem('cyber_api_base_url');
+        setMessage('API override removed. Using default endpoint.', 'info');
+        return;
+      }
+      localStorage.setItem('cyber_api_base_url', normalized);
+      setMessage(`API endpoint updated to: ${normalized}`, 'success');
+      setTimeout(() => window.location.reload(), 250);
+    }
+
+    apiSettingsLink.addEventListener('click', (event) => {
+      event.preventDefault();
+      openApiSettings();
+    });
+
+    apiResetLink.addEventListener('click', (event) => {
+      event.preventDefault();
+      localStorage.removeItem('cyber_api_base_url');
+      setMessage('API endpoint reset. Reloading...', 'info');
+      setTimeout(() => window.location.reload(), 250);
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const password = passwordInput.value;
+      if (!password) return setMessage('Enter admin password.', 'error');
+
+      setMessage('Signing in admin...', 'info');
+      try {
+        const response = await fetch(`${API_BASE_URL}/admin/login`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password })
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.detail || 'Admin login failed');
+
+        localStorage.setItem('admin_session_active', 'true');
+        localStorage.setItem('admin_name', data.name || 'Admin');
+        localStorage.setItem('admin_email', data.email || 'admin@cyberkavalan.local');
+        sessionStorage.setItem('admin_portal_password', password);
+        setMessage('Admin login successful. Redirecting...', 'success');
+        setTimeout(() => { window.location.href = 'admin-dashboard.html'; }, 500);
+      } catch (error) {
+        const fallback = 'Unable to login right now. Open API Settings and set your backend URL.';
+        const displayMessage = error && String(error.message || '').toLowerCase().includes('failed to fetch')
+          ? fallback
+          : (error.message || fallback);
+        setMessage(displayMessage, 'error');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Portal - Cyber Kavalan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --color-neon-blue: #00f2ff;
+      --color-neon-purple: #bc13fe;
+      --color-cyber-black: #000000;
+      --bg-base: var(--color-cyber-black);
+      --bg-surface: #04060f;
+      --bg-input: #101426;
+      --border-subtle: rgba(0, 242, 255, 0.14);
+      --text-primary: #ffffff;
+      --text-secondary: #a6b4cf;
+      --text-muted: #6f7f9d;
+      --gradient-primary: linear-gradient(135deg, var(--color-neon-blue), var(--color-neon-purple));
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+    body { background: var(--bg-base); color: var(--text-primary); overflow-x: hidden; }
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border-subtle);
+      background: var(--bg-surface);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+    .brand { display: flex; gap: 0.6rem; align-items: center; font-weight: 800; min-width: 0; }
+    .brand i { color: var(--color-neon-blue); }
+    .admin-tag {
+      font-size: 0.72rem;
+      letter-spacing: 0.4px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 999px;
+      padding: 0.3rem 0.7rem;
+      color: var(--color-neon-blue);
+    }
+    .btn {
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-input);
+      color: var(--text-primary);
+      border-radius: 10px;
+      padding: 0.55rem 0.9rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn-primary {
+      border: none;
+      background: var(--gradient-primary);
+      color: #fff;
+    }
+    .layout {
+      padding: 1.2rem;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      max-width: 1250px;
+      margin: 0 auto;
+    }
+    .panel {
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      background: var(--bg-surface);
+      padding: 1rem;
+    }
+    .panel h2 {
+      font-size: 1rem;
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--color-neon-blue);
+    }
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0.6rem;
+      margin-bottom: 0.8rem;
+    }
+    input, select, textarea {
+      width: 100%;
+      background: var(--bg-input);
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 0.55rem 0.7rem;
+    }
+    textarea { min-height: 90px; resize: vertical; }
+    .table-wrap { overflow: auto; border: 1px solid var(--border-subtle); border-radius: 12px; -webkit-overflow-scrolling: touch; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+    th, td { text-align: left; padding: 0.65rem; border-bottom: 1px solid var(--border-subtle); white-space: nowrap; }
+    th { color: var(--color-neon-blue); background: rgba(0, 242, 255, 0.06); }
+    .status-chip {
+      display: inline-block;
+      font-size: 0.72rem;
+      border-radius: 999px;
+      padding: 0.22rem 0.55rem;
+      border: 1px solid var(--border-subtle);
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; margin-bottom: 0.8rem; }
+    .card {
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 0.75rem;
+      background: var(--bg-input);
+    }
+    .card .k { font-size: 0.74rem; color: var(--text-muted); margin-bottom: 0.2rem; }
+    .card .v { font-size: 1.2rem; font-weight: 700; }
+    .msg { margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-secondary); min-height: 1.1rem; }
+    .list {
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 0.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-height: 220px;
+      overflow: auto;
+    }
+    .item {
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 0.55rem;
+      background: var(--bg-input);
+      font-size: 0.84rem;
+      overflow-wrap: anywhere;
+    }
+    .chart-wrap { height: 260px; }
+    @media (max-width: 980px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      .cards { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 700px) {
+      .navbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.65rem;
+        padding: 0.8rem 0.9rem;
+      }
+      .brand {
+        font-size: 0.95rem;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        row-gap: 0.4rem;
+      }
+      .admin-tag { margin-left: auto; }
+      .layout {
+        padding: 0.75rem;
+      }
+      .panel {
+        padding: 0.8rem;
+      }
+      .controls {
+        grid-template-columns: 1fr;
+      }
+      .btn,
+      .btn-primary {
+        width: 100%;
+      }
+      .chart-wrap {
+        height: 220px;
+      }
+      th, td {
+        max-width: 220px;
+        overflow-wrap: anywhere;
+      }
+    }
+    @media (max-width: 480px) {
+      .cards { grid-template-columns: 1fr; }
+      table { font-size: 0.8rem; }
+      th, td { padding: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <div class="brand"><i class="fas fa-user-shield"></i> Cyber Kavalan Admin Portal <span class="admin-tag" id="adminIdentity">ADMIN</span></div>
+    <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+      <button class="btn" id="apiSettingsBtn"><i class="fas fa-plug"></i> API</button>
+      <button class="btn" id="apiResetBtn"><i class="fas fa-rotate-left"></i></button>
+      <button class="btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+  </div>
+
+  <main class="layout">
+    <section class="panel">
+      <h2><i class="fas fa-flag"></i> Scam Report Dashboard</h2>
+      <div class="controls">
+        <input id="fType" placeholder="Scam type (optional)" />
+        <select id="fSeverity">
+          <option value="">All severity</option><option>low</option><option>medium</option><option>high</option><option>critical</option>
+        </select>
+        <select id="fStatus">
+          <option value="">All status</option><option value="under_investigation">under_investigation</option><option value="verified">verified</option><option value="false">false</option>
+        </select>
+        <input id="fDateFrom" type="date" />
+        <input id="fDateTo" type="date" />
+        <button class="btn btn-primary" id="loadReportsBtn">Apply Filters</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Type</th><th>District</th><th>Severity</th><th>Status</th><th>Source</th><th>Timestamp</th><th>Action</th></tr></thead>
+          <tbody id="reportsBody"></tbody>
+        </table>
+      </div>
+      <div class="msg" id="reportMsg"></div>
+    </section>
+
+    <section class="panel">
+      <h2><i class="fas fa-chart-line"></i> Security Analytics Dashboard</h2>
+      <div class="cards">
+        <div class="card"><div class="k">Total Reports</div><div class="v" id="kTotal">0</div></div>
+        <div class="card"><div class="k">Verified Reports</div><div class="v" id="kVerified">0</div></div>
+        <div class="card"><div class="k">Under Investigation</div><div class="v" id="kInvestigating">0</div></div>
+      </div>
+      <div class="grid-2">
+        <div class="panel"><h2 style="font-size:0.92rem"><i class="fas fa-wave-square"></i> Scam Trends</h2><div class="chart-wrap"><canvas id="trendChart"></canvas></div></div>
+        <div class="panel"><h2 style="font-size:0.92rem"><i class="fas fa-layer-group"></i> Common Scam Types</h2><div class="chart-wrap"><canvas id="typeChart"></canvas></div></div>
+      </div>
+      <div class="panel" style="margin-top:0.8rem"><h2 style="font-size:0.92rem"><i class="fas fa-location-dot"></i> High-risk Regions</h2><div class="chart-wrap"><canvas id="regionChart"></canvas></div></div>
+    </section>
+  </main>
+
+  <script>
+    function normalizeApiBaseUrl(value) {
+      return String(value || '').trim().replace(/\/+$/, '');
+    }
+
+    const API_BASE_URL = (() => {
+      const params = new URLSearchParams(window.location.search);
+      const fromQuery = normalizeApiBaseUrl(params.get('api'));
+      if (fromQuery) {
+        localStorage.setItem('cyber_api_base_url', fromQuery);
+        return fromQuery;
+      }
+
+      const fromWindow = normalizeApiBaseUrl(window.__API_BASE_URL__);
+      if (fromWindow) return fromWindow;
+
+      const fromStorage = normalizeApiBaseUrl(localStorage.getItem('cyber_api_base_url'));
+      if (fromStorage) return fromStorage;
+
+      const protocol = window.location.protocol;
+      const host = window.location.hostname;
+      const isLocal = host === 'localhost' || host === '127.0.0.1';
+
+      if ((protocol === 'http:' || protocol === 'https:') && window.location.port === '8000') {
+        return `${protocol}//${window.location.host}`;
+      }
+
+      if (!isLocal && (protocol === 'http:' || protocol === 'https:')) {
+        return `${protocol}//${window.location.host}`;
+      }
+
+      return 'http://127.0.0.1:8000';
+    })();
+
+    const adminPortalPassword = sessionStorage.getItem('admin_portal_password') || '';
+
+    function adminHeaders(baseHeaders = {}) {
+      return { ...baseHeaders, 'x-admin-password': adminPortalPassword };
+    }
+
+    function requireAdminSession() {
+      if (localStorage.getItem('admin_session_active') !== 'true') {
+        window.location.href = 'admin-login.html';
+        return false;
+      }
+      if (!adminPortalPassword) {
+        localStorage.removeItem('admin_session_active');
+        localStorage.removeItem('admin_name');
+        localStorage.removeItem('admin_email');
+        window.location.href = 'admin-login.html';
+        return false;
+      }
+      document.getElementById('adminIdentity').textContent = (localStorage.getItem('admin_name') || 'ADMIN').toUpperCase();
+      return true;
+    }
+
+    function openApiSettings() {
+      const current = localStorage.getItem('cyber_api_base_url') || API_BASE_URL;
+      const value = window.prompt('Enter backend API base URL (example: https://your-backend-domain)', current || '');
+      if (value === null) return;
+      const normalized = normalizeApiBaseUrl(value);
+      if (!normalized) {
+        localStorage.removeItem('cyber_api_base_url');
+        alert('API override removed. Reloading...');
+        window.location.reload();
+        return;
+      }
+      localStorage.setItem('cyber_api_base_url', normalized);
+      alert(`API endpoint set to: ${normalized}`);
+      window.location.reload();
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('admin_session_active');
+      localStorage.removeItem('admin_name');
+      localStorage.removeItem('admin_email');
+      sessionStorage.removeItem('admin_portal_password');
+      window.location.href = 'admin-login.html';
+    });
+
+    document.getElementById('apiSettingsBtn')?.addEventListener('click', openApiSettings);
+    document.getElementById('apiResetBtn')?.addEventListener('click', () => {
+      localStorage.removeItem('cyber_api_base_url');
+      alert('API endpoint reset. Reloading...');
+      window.location.reload();
+    });
+
+    const reportMsg = document.getElementById('reportMsg');
+    function setReportMsg(text, isError = false) {
+      reportMsg.textContent = text;
+      reportMsg.style.color = isError ? 'var(--color-neon-purple)' : 'var(--text-secondary)';
+    }
+
+    async function loadReports() {
+      const params = new URLSearchParams();
+      const type = document.getElementById('fType').value.trim();
+      const severity = document.getElementById('fSeverity').value;
+      const status = document.getElementById('fStatus').value;
+      const dateFrom = document.getElementById('fDateFrom').value;
+      const dateTo = document.getElementById('fDateTo').value;
+      if (type) params.set('scam_type', type);
+      if (severity) params.set('severity', severity);
+      if (status) params.set('status', status);
+      if (dateFrom) params.set('date_from', dateFrom);
+      if (dateTo) params.set('date_to', dateTo);
+      params.set('limit', '300');
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/admin/reports?${params.toString()}`, { headers: adminHeaders() });
+        const rows = await response.json();
+        if (!response.ok) throw new Error('Failed to load reports');
+
+        const body = document.getElementById('reportsBody');
+        body.innerHTML = rows.length ? rows.map((r) => `
+          <tr>
+            <td>${r.id}</td>
+            <td>${r.type || ''}</td>
+            <td>${r.district || ''}</td>
+            <td>${r.severity || 'medium'}</td>
+            <td><span class="status-chip">${r.status || 'under_investigation'}</span></td>
+            <td>${r.source_value || '-'}</td>
+            <td>${r.timestamp || ''}</td>
+            <td>
+              <select onchange="updateReportStatus(${r.id}, this.value)">
+                <option value="">Set status</option>
+                <option value="verified">verified</option>
+                <option value="false">false</option>
+                <option value="under_investigation">under_investigation</option>
+              </select>
+            </td>
+          </tr>
+        `).join('') : '<tr><td colspan="8">No reports found.</td></tr>';
+
+        setReportMsg(`Loaded ${rows.length} reports.`);
+      } catch (err) {
+        setReportMsg(err.message || 'Unable to load reports', true);
+      }
+    }
+
+    async function updateReportStatus(reportId, status) {
+      if (!status) return;
+      try {
+        const response = await fetch(`${API_BASE_URL}/admin/reports/${reportId}/status`, {
+          method: 'PATCH',
+          headers: adminHeaders({ 'Content-Type': 'application/json' }),
+          body: JSON.stringify({ status })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || 'Update failed');
+        setReportMsg(`Report ${reportId} updated to ${status}.`);
+        loadReports();
+        loadAnalytics();
+      } catch (err) {
+        setReportMsg(err.message || 'Failed to update report', true);
+      }
+    }
+    window.updateReportStatus = updateReportStatus;
+
+    let trendChart, typeChart, regionChart;
+    function upsertChart(existingChart, ctx, config) {
+      if (existingChart) existingChart.destroy();
+      return new Chart(ctx, config);
+    }
+
+    async function loadAnalytics() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/admin/analytics`, { headers: adminHeaders() });
+        const data = await response.json();
+        if (!response.ok) throw new Error('Analytics fetch failed');
+
+        document.getElementById('kTotal').textContent = data.summary?.total_reports ?? 0;
+        document.getElementById('kVerified').textContent = data.summary?.verified_reports ?? 0;
+        document.getElementById('kInvestigating').textContent = data.summary?.under_investigation ?? 0;
+
+        trendChart = upsertChart(trendChart, document.getElementById('trendChart'), {
+          type: 'line',
+          data: {
+            labels: (data.scam_trends || []).map(x => x.day),
+            datasets: [{
+              label: 'Reports',
+              data: (data.scam_trends || []).map(x => x.count),
+              borderColor: '#00f2ff',
+              backgroundColor: 'rgba(0,242,255,0.12)',
+              fill: true,
+              tension: 0.3
+            }]
+          },
+          options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        typeChart = upsertChart(typeChart, document.getElementById('typeChart'), {
+          type: 'bar',
+          data: {
+            labels: (data.common_scam_types || []).map(x => x.type),
+            datasets: [{
+              label: 'Count',
+              data: (data.common_scam_types || []).map(x => x.count),
+              backgroundColor: 'rgba(188,19,254,0.45)',
+              borderColor: '#bc13fe'
+            }]
+          },
+          options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        regionChart = upsertChart(regionChart, document.getElementById('regionChart'), {
+          type: 'bar',
+          data: {
+            labels: (data.high_risk_regions || []).map(x => x.district),
+            datasets: [{
+              label: 'Reports',
+              data: (data.high_risk_regions || []).map(x => x.count),
+              backgroundColor: 'rgba(0,242,255,0.35)',
+              borderColor: '#00f2ff'
+            }]
+          },
+          options: { responsive: true, maintainAspectRatio: false }
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    document.getElementById('loadReportsBtn').addEventListener('click', loadReports);
+    if (requireAdminSession()) {
+      loadReports();
+      loadAnalytics();
+    }
+  </script>
+</body>
+</html>
